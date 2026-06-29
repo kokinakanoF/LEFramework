@@ -6,7 +6,8 @@
 //　インクルード
 //===========================================================================
 #include "UI/Interaction/LEToggleButton.h"
-#include "UI/Interaction/LEToggleButtonManager.h"
+#include "UI/Interaction/LECheckBoxManager.h"
+#include "UI/Interaction/LERadioButtonManager.h"
 
 
 

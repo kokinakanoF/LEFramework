@@ -113,8 +113,6 @@ class LEFRAMEWORK_API ULECheckBox: public ULEToggleButton
 {
 	GENERATED_BODY()
 
-	friend class ULECheckBoxManager;
-
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	ULECheckBoxManager* GetManager() const { return Manager; }
@@ -122,7 +120,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int32 GetManagedID() const { return ManagedID; }
 
-protected:
+public:
 	virtual void Registered(TObjectPtr<ULECheckBoxManager> InManager, int32 InManageID);
 	virtual void Unreagistered();
 
