@@ -28,7 +28,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLEToggleButtonStateEvent, ULETog
 
 //===========================================================================
 //　クラス
-//　@brief トグルボタン
+//　@brief 押すたびにオンとオフを切り替えるトグルボタン
 //===========================================================================
 UCLASS(ClassGroup = UI, meta = (Category = "LE Framework"))
 class LEFRAMEWORK_API ULEToggleButton : public ULEButton
@@ -38,7 +38,7 @@ class LEFRAMEWORK_API ULEToggleButton : public ULEButton
 public:
 	/** トグル状態の設定 */
 	UFUNCTION(BlueprintCallable, Category = "LE Framework|UI")
-	void SetIsChecked(const bool bChecked);
+	virtual void SetIsChecked(bool bChecked);
 
 	/** 状態をトグルする */
 	UFUNCTION(BlueprintCallable, Category = "LE Framework|UI")
@@ -59,9 +59,6 @@ protected:
 	void BP_OnUnchecked();
 
 protected:
-	/** トグル状態の更新リクエスト */
-	virtual void RequestNewToggleState(const bool bNewState);
-
 	virtual void NativeOnChecked();
 	virtual void NativeOnUnchecked();
 
@@ -91,7 +88,10 @@ public:
 
 
 protected:
-	/** オンになるアニメーション */
+	/** 
+	 * オンになるアニメーション
+	 * AN_Uncheckedがない場合は、非選択時にAN_Selectedを逆再生します
+	 */
 	UPROPERTY(BlueprintReadOnly, Transient, meta = (BindWidgetAnim), Category = "LEToggleButton|Animation")
 	TObjectPtr<UWidgetAnimation> AN_Checked;
 
@@ -108,6 +108,12 @@ private:
 
 
 
+//===========================================================================
+//　クラス
+//　@brief マネージャによって管理されるチェックボックス
+// 
+//  @note 作成中
+//===========================================================================
 UCLASS(ClassGroup = UI, meta = (Category = "LE Framework"))
 class LEFRAMEWORK_API ULECheckBox: public ULEToggleButton
 {
@@ -140,6 +146,15 @@ protected:
 
 
 
+
+
+//===========================================================================
+//　クラス
+//　@brief マネージャによって管理されるラジオボタン
+//		   自分でオンからオフになることは出来ません
+// 
+//  @note 作成中
+//===========================================================================
 UCLASS(ClassGroup = UI, meta = (Category = "LE Framework"))
 class LEFRAMEWORK_API ULERadioButton : public ULEToggleButton
 {
@@ -158,14 +173,23 @@ protected:
 	virtual void Registered(TObjectPtr<ULERadioButtonManager> InManager, int32 InManageID);
 	virtual void Unreagistered();
 
+
 protected:
 	//~Begin ULEToggleButton interface
-	virtual void NativeOnChecked() override;
-	virtual void NativeOnUnchecked() override;
+	virtual void SetIsChecked(bool bChecked) override;
 	//~End ULEToggleButton interface
 
 
-protected:
+private:
+	/**
+	 * 強制的にオフにします
+	 * @note この関数はULERadioButtonManagerからのみ呼んでください
+	 */
+	void ForceUncheck();
+
+
+
+private:
 	UPROPERTY()
 	TObjectPtr<ULERadioButtonManager> Manager;
 

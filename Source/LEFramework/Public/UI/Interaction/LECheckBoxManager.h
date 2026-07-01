@@ -28,6 +28,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLECheckBoxManagerEvent, int32, I
 //===========================================================================
 //　クラス
 //　@brief トグルボタン管理クラス
+// 
+//  @note 作成中
 //===========================================================================
 UCLASS(BlueprintType)
 class ULECheckBoxManager : public UObject
@@ -94,7 +96,7 @@ protected:
 
 public:
 	UPROPERTY(BlueprintAssignable)
-	FOnLECheckBoxManagerEvent OnBoxStateChanged;
+	FOnLECheckBoxManagerEvent OnAnyBoxStateChanged;
 
 protected:
 	UPROPERTY()

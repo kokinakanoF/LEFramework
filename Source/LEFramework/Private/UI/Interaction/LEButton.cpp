@@ -18,6 +18,8 @@ void ULEButton::SetIsPressed(bool bPressed)
 {
 	if (bIsPressable && bIsPressed != bPressed)
 	{
+		bIsPressed = bPressed;
+
 		if (bPressed)
 		{
 			NativeOnPressed();
@@ -32,8 +34,6 @@ void ULEButton::SetIsPressed(bool bPressed)
 
 void ULEButton::NativeOnPressed()
 {
-	bIsPressed = true;
-
 	// アニメーション再生
 	if (PressAnimPlayTimming == ELEButtonPressAnimPlayTimming::PressAndRelease)
 	{
@@ -51,8 +51,6 @@ void ULEButton::NativeOnPressed()
 
 void ULEButton::NativeOnReleased()
 {
-	bIsPressed = false;
-
 	// アニメーション再生
 	if (PressAnimPlayTimming == ELEButtonPressAnimPlayTimming::PressAndRelease)
 	{

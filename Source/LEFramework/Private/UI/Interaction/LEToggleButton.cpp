@@ -11,22 +11,13 @@
 
 
 
-void ULEToggleButton::SetIsChecked(const bool bNewState)
+void ULEToggleButton::SetIsChecked(bool bChecked)
 {
-	RequestNewToggleState(bNewState);
-}
-
-void ULEToggleButton::ToggleChecked()
-{
-	RequestNewToggleState(!bIsChecked);
-}
-
-
-void ULEToggleButton::RequestNewToggleState(const bool bNewState)
-{
-	if (bIsChecked != bNewState)
+	if (bIsChecked != bChecked)
 	{
-		if (bNewState)
+		bIsChecked = bChecked;
+
+		if (bChecked)
 		{
 			NativeOnChecked();
 		}
@@ -37,10 +28,15 @@ void ULEToggleButton::RequestNewToggleState(const bool bNewState)
 	}
 }
 
+void ULEToggleButton::ToggleChecked()
+{
+	SetIsChecked(!bIsChecked);
+}
+
+
+
 void ULEToggleButton::NativeOnChecked()
 {
-	bIsChecked = true;
-
 	// アニメーション再生
 	PlayCheckedAnim();
 
@@ -52,8 +48,6 @@ void ULEToggleButton::NativeOnChecked()
 
 void ULEToggleButton::NativeOnUnchecked()
 {
-	bIsChecked = false;
-
 	// アニメーション再生
 	PlayUncheckedAnim();
 
@@ -147,22 +141,20 @@ void ULERadioButton::Unreagistered()
 }
 
 
-void ULERadioButton::NativeOnChecked()
+void ULERadioButton::SetIsChecked(bool bChecked)
 {
-	Super::NativeOnChecked();
-
-	if (Manager)
+	// オン→オフにはなれない
+	if (!IsChecked())
 	{
-
+		Super::SetIsChecked(bChecked);
 	}
 }
 
-void ULERadioButton::NativeOnUnchecked()
+
+void ULERadioButton::ForceUncheck()
 {
-	Super::NativeOnUnchecked();
-
-	if (Manager)
+	if (IsChecked())
 	{
-
+		Super::SetIsChecked(false);
 	}
 }

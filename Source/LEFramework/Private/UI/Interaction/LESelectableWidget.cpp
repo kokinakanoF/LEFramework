@@ -42,6 +42,8 @@ void ULESelectableWidget::SetIsSelected(bool bSelected)
 {
 	if (bIsSelectable && bIsSelected != bSelected)
 	{
+		bIsSelected = bSelected;
+
 		if (bSelected)
 		{
 			NativeOnSelected();
@@ -57,8 +59,6 @@ void ULESelectableWidget::SetIsSelected(bool bSelected)
 
 void ULESelectableWidget::NativeOnSelected()
 {
-	bIsSelected = true;
-
 	// アニメーション＆SE再生
 	PlaySelectedAnimation();
 	FSlateApplication::Get().PlaySound(SelectedSound);
@@ -70,8 +70,6 @@ void ULESelectableWidget::NativeOnSelected()
 
 void ULESelectableWidget::NativeOnDeselected()
 {
-	bIsSelected = false;
-
 	// アニメーション＆SE再生
 	PlayDeselectedAnimation();
 	FSlateApplication::Get().PlaySound(DeselectedSound);
