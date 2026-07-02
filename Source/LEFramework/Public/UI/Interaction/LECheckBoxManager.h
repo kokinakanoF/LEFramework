@@ -21,7 +21,7 @@ class ULECheckBox;
 //===========================================================================
 //　デリゲート
 //===========================================================================
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLECheckBoxManagerEvent, int32, InIndex, bool, bNewState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnLECheckBoxManagerEvent, ULECheckBox*, InBox, int32, InIndex, bool, bNewState);
 
 
 
@@ -89,14 +89,15 @@ public:
 	TArray<int32> GetAllBoxIndexByState(bool bChecked);
 
 
-protected:
-	virtual void HandleBoxStateChanged(int32 InIndex, bool bNewState);
+private:
+	UFUNCTION()
+	void HandleBoxStateChanged(ULEToggleButton* InButton, bool bNewState);
 
 
 
 public:
 	UPROPERTY(BlueprintAssignable)
-	FOnLECheckBoxManagerEvent OnAnyBoxStateChanged;
+	FOnLECheckBoxManagerEvent OnBoxStateChanged;
 
 protected:
 	UPROPERTY()

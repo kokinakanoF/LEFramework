@@ -21,8 +21,8 @@ class ULERadioButtonManager;
 //===========================================================================
 //　デリゲート
 //===========================================================================
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLEToggleButtonEvent, ULEToggleButton*, Button);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLEToggleButtonStateEvent, ULEToggleButton*, Button, bool, bOn);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLEToggleButtonEvent, ULEToggleButton*, InButton);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLEToggleButtonStateEvent, ULEToggleButton*, InButton, bool, bNewState);
 
 
 
@@ -118,30 +118,6 @@ UCLASS(ClassGroup = UI, meta = (Category = "LE Framework"))
 class LEFRAMEWORK_API ULECheckBox: public ULEToggleButton
 {
 	GENERATED_BODY()
-
-public:
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	ULECheckBoxManager* GetManager() const { return Manager; }
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	int32 GetManagedID() const { return ManagedID; }
-
-public:
-	virtual void Registered(TObjectPtr<ULECheckBoxManager> InManager, int32 InManageID);
-	virtual void Unreagistered();
-
-protected:
-	//~Begin ULEToggleButton interface
-	virtual void NativeOnChecked() override;
-	virtual void NativeOnUnchecked() override;
-	//~End ULEToggleButton interface
-
-
-protected:
-	UPROPERTY()
-	TObjectPtr<ULECheckBoxManager> Manager;
-
-	int32 ManagedID = -1;
 };
 
 
@@ -162,18 +138,6 @@ class LEFRAMEWORK_API ULERadioButton : public ULEToggleButton
 
 	friend class ULERadioButtonManager;
 
-public:
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	ULERadioButtonManager* GetManager() const { return Manager; }
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	int32 GetManagedID() const { return ManagedID; }
-
-protected:
-	virtual void Registered(TObjectPtr<ULERadioButtonManager> InManager, int32 InManageID);
-	virtual void Unreagistered();
-
-
 protected:
 	//~Begin ULEToggleButton interface
 	virtual void SetIsChecked(bool bChecked) override;
@@ -186,12 +150,4 @@ private:
 	 * @note この関数はULERadioButtonManagerからのみ呼んでください
 	 */
 	void ForceUncheck();
-
-
-
-private:
-	UPROPERTY()
-	TObjectPtr<ULERadioButtonManager> Manager;
-
-	int32 ManagedID = -1;
 };

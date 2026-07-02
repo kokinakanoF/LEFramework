@@ -14,16 +14,25 @@ void ULECheckBoxManager::Register(ULECheckBox* InCheckBox)
 {
 	if (InCheckBox && !CheckBoxes.Contains(InCheckBox))
 	{
-		InCheckBox->Registered(this, CheckBoxes.Num());
+		InCheckBox->OnToggleChecked.AddDynamic(this, &ThisClass::HandleBoxStateChanged);
 		CheckBoxes.Add(InCheckBox);
+	}
+	else
+	{
+		//UE_LOG(Log_Temp, Warning, TEXT("The box is invalid or already registered"));
 	}
 }
 
 void ULECheckBoxManager::Unregister(ULECheckBox* InCheckBox)
 {
-	if (InCheckBox && !CheckBoxes.Contains(InCheckBox))
+	if (CheckBoxes.Contains(InCheckBox))
 	{
-		InCheckBox->Unreagistered();
+		CheckBoxes.Add(InCheckBox);
+		InCheckBox->OnToggleChecked.RemoveDynamic(this, &ThisClass::HandleBoxStateChanged);
+	}
+	else
+	{
+		//UE_LOG(Log_Temp, Warning, TEXT("Couldn't find specific CheckBox"));
 	}
 }
 
@@ -111,11 +120,18 @@ TArray<int32> ULECheckBoxManager::GetAllBoxIndexByState(bool bChecked)
 
 
 
-void ULECheckBoxManager::HandleBoxStateChanged(int32 InIndex, bool bNewState)
+void ULECheckBoxManager::HandleBoxStateChanged(ULEToggleButton* InButton, bool bNewState)
 {
-	if (CheckBoxes.IsValidIndex(InIndex))
+	TObjectPtr<ULECheckBox> box = Cast<ULECheckBox>(InButton);
+
+	int32 foundIndex = CheckBoxes.Find(box);
+	if (foundIndex == INDEX_NONE)
+	{
+		//UE_LOG(Log_Temp, Warning, TEXT("Couldn't find specific CheckBox"));
+	}
+	else
 	{
 		// イベントの実行
-		OnBoxStateChanged.Broadcast(InIndex, bNewState);
+		OnBoxStateChanged.Broadcast(box, foundIndex, bNewState);
 	}
 }

@@ -92,55 +92,6 @@ void ULEToggleButton::NativeOnClicked()
 
 
 
-
-void ULECheckBox::Registered(TObjectPtr<ULECheckBoxManager> InManager, int32 InManageID)
-{
-	Manager = InManager;
-	ManagedID = InManageID;
-}
-
-void ULECheckBox::Unreagistered()
-{
-	Manager = nullptr;
-	ManagedID = -1;
-}
-
-
-void ULECheckBox::NativeOnChecked()
-{
-	Super::NativeOnChecked();
-
-	if (Manager)
-	{
-
-	}
-}
-
-void ULECheckBox::NativeOnUnchecked()
-{
-	Super::NativeOnUnchecked();
-
-	if (Manager)
-	{
-
-	}
-}
-
-
-
-void ULERadioButton::Registered(TObjectPtr<ULERadioButtonManager> InManager, int32 InManageID)
-{
-	Manager = InManager;
-	ManagedID = InManageID;
-}
-
-void ULERadioButton::Unreagistered()
-{
-	Manager = nullptr;
-	ManagedID = -1;
-}
-
-
 void ULERadioButton::SetIsChecked(bool bChecked)
 {
 	// オン→オフにはなれない

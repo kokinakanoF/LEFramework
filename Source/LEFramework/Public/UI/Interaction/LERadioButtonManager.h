@@ -21,7 +21,7 @@ class ULERadioButton;
 //===========================================================================
 //　デリゲート
 //===========================================================================
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLEToggleButtonManagerEvent, int32, InButtonID, bool, bNewState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLERadioButtonManagerEvent, ULERadioButton*, InButton, int32, InIndex);
 
 
 
@@ -37,6 +37,39 @@ class ULERadioButtonManager : public UObject
 	GENERATED_BODY()
 
 public:
+	/** ラジオボタンの登録 */
+	UFUNCTION(BlueprintCallable)
+	void Register(ULERadioButton* InButton);
+
+	/** ラジオボタンの登録解除 */
+	UFUNCTION(BlueprintCallable)
+	void Unregister(ULERadioButton* InButton);
+
+	/** ラジオボタンの登録全解除 */
+	UFUNCTION(BlueprintCallable)
+	void UnregisterAll();
+
+
+	UFUNCTION(BlueprintCallable)
+	void ResetCheck();
+
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	ULERadioButton* GetCheckedButton() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	int32 GetCheckedButtonIndex() const;
+
+
+private:
+	UFUNCTION()
+	void HandleCheckedButtonChanged(ULEToggleButton* InButton);
+
+
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnLERadioButtonManagerEvent OnCheckedButtonChanged;
 
 protected:
 	UPROPERTY()
