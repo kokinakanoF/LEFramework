@@ -10,31 +10,55 @@
 
 
 
-void ULERadioButtonManager::Register(ULERadioButton* InButton)
+bool ULERadioButtonManager::Register(ULERadioButton* InButton)
 {
 	if (InButton && !RadioButtons.Contains(InButton))
 	{
 		// イベントのバインド＆配列に追加
-		InButton->OnChecked.AddDynamic(this, &ThisClass::HandleCheckedButtonChanged);
+		InButton->OnChecked.AddDynamic(this, &ThisClass::ReceiveButtonChecked);
 		RadioButtons.Add(InButton);
+
+		// オン状態のボタンを登録する場合は、そのボタンが選択中であることにする
+		if (InButton->IsChecked())
+		{
+			ReceiveButtonChecked(InButton);
+		}
+
+		// 登録成功
+		return true;
 	}
-	else
-	{
-		//UE_LOG(Log_Temp, Warning, TEXT("The button is invalid or already registered"));
-	}
+
+	// 登録失敗
+	UE_LOG(LogTemp, Warning, TEXT("The button is invalid or already registered"));
+	return false;
 }
 
-void ULERadioButtonManager::Unregister(ULERadioButton* InButton)
+bool ULERadioButtonManager::Unregister(ULERadioButton* InButton)
 {
-	if (RadioButtons.Contains(InButton))
+	if (InButton)
 	{
-		// イベントのアンバインド
-		InButton->OnChecked.RemoveDynamic(this, &ThisClass::HandleCheckedButtonChanged);
+		const int32 foundIndex = RadioButtons.Find(InButton);
+		if (foundIndex != INDEX_NONE)
+		{
+			// イベントのアンバインド
+			InButton->OnChecked.RemoveDynamic(this, &ThisClass::ReceiveButtonChecked);
+			RadioButtons.RemoveAt(foundIndex);
+
+			// オン = 選択中のボタンだったので、選択ナシにする
+			// 再利用を加味して、ボタンの状態はオンのままでもよいものとする
+			if (foundIndex == CheckedButtonIndex)
+			{
+				UpdateCheckedButtonIndex(INDEX_NONE);
+			}
+
+			// 登録解除成功
+			return true;
+		}
 	}
-	else
-	{
-		//UE_LOG(Log_Temp, Warning, TEXT("Couldn't find specific RadioButton"));
-	}
+
+	// 登録解除失敗
+	UE_LOG(LogTemp, Warning, TEXT("Couldn't find specific RadioButton"));
+	return false;
 }
 
 void ULERadioButtonManager::UnregisterAll()
@@ -44,13 +68,22 @@ void ULERadioButtonManager::UnregisterAll()
 		if (rb)
 		{
 			// イベントのアンバインド
-			rb->OnChecked.RemoveDynamic(this, &ThisClass::HandleCheckedButtonChanged);
+			rb->OnChecked.RemoveDynamic(this, &ThisClass::ReceiveButtonChecked);
 		}
 	}
 
 	RadioButtons.Empty();
+	UpdateCheckedButtonIndex(INDEX_NONE);
 }
 
+
+void ULERadioButtonManager::CheckButtonFromIndex(int32 InIndex)
+{
+	if (TObjectPtr<ULERadioButton> rb = GetButtonFromIndex(InIndex))
+	{
+		rb->SetIsChecked(true);
+	}
+}
 
 void ULERadioButtonManager::ResetCheck()
 {
@@ -58,48 +91,40 @@ void ULERadioButtonManager::ResetCheck()
 	{
 		// 選択解除
 		rb->ForceUncheck();
+
 		// イベントの実行
-		OnCheckedButtonChanged.Broadcast(nullptr, INDEX_NONE);
+		UpdateCheckedButtonIndex(INDEX_NONE);
 	}
 }
 
 
 ULERadioButton* ULERadioButtonManager::GetCheckedButton() const
 {
-	for (ULERadioButton* rb : RadioButtons)
-	{
-		if (rb && rb->IsChecked())
-		{
-			return rb;
-		}
-	}
-
-	return nullptr;
+	return GetButtonFromIndex(CheckedButtonIndex);
 }
 
-int32 ULERadioButtonManager::GetCheckedButtonIndex() const
+ULERadioButton* ULERadioButtonManager::GetButtonFromIndex(int32 InIndex) const
 {
-	for (int32 i = 0; i < RadioButtons.Num(); i++)
-	{
-		TObjectPtr<ULERadioButton> rb = RadioButtons[i];
-		if (rb && rb->IsChecked())
-		{
-			return i;
-		}
-	}
-
-	return INDEX_NONE;
+	return RadioButtons.IsValidIndex(InIndex) ? RadioButtons[InIndex] : nullptr;
 }
 
 
-void ULERadioButtonManager::HandleCheckedButtonChanged(ULEToggleButton* InButton)
+
+void ULERadioButtonManager::UpdateCheckedButtonIndex(int32 InIndex)
+{
+	CheckedButtonIndex = InIndex;
+	OnCheckedButtonChanged.Broadcast(GetCheckedButton(), CheckedButtonIndex);
+}
+
+
+void ULERadioButtonManager::ReceiveButtonChecked(ULEToggleButton* InButton)
 {
 	TObjectPtr<ULERadioButton> rb = Cast<ULERadioButton>(InButton);
 
 	int32 newIndex = RadioButtons.Find(rb);
-	if (newIndex == INDEX_NONE)
+	if (!InButton || newIndex == INDEX_NONE)
 	{
-		//UE_LOG(Log_Temp, Warning, TEXT("Couldn't find specific RadioButton"));
+		UE_LOG(LogTemp, Warning, TEXT("Couldn't find specific RadioButton"));
 	}
 	else
 	{
@@ -110,6 +135,6 @@ void ULERadioButtonManager::HandleCheckedButtonChanged(ULEToggleButton* InButton
 		}
 
 		// イベントの実行
-		OnCheckedButtonChanged.Broadcast(rb, newIndex);
+		UpdateCheckedButtonIndex(CheckedButtonIndex);
 	}
 }
