@@ -194,6 +194,18 @@ void ULESelectableWidget::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 }
 
 
+FReply ULESelectableWidget::NativeOnFocusReceived(const FGeometry& InGeometry, const FFocusEvent& InFocusEvent)
+{
+	// 選択
+	if (GetIsEnabled() && EnumHasAnyFlags((ELESelectMethod)SelectMethod, ELESelectMethod::Focus))
+	{
+		// フォーカスで選択が可能な場合のみ親関数を呼び出してフォーカスを与える
+		return Super::NativeOnFocusReceived(InGeometry, InFocusEvent);
+	}
+
+	return FReply::Unhandled();
+}
+
 void ULESelectableWidget::NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent)
 {
 	Super::NativeOnAddedToFocusPath(InFocusEvent);
