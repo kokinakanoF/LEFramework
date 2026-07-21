@@ -52,6 +52,9 @@ class LEFRAMEWORK_API ULESelectableWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	ULESelectableWidget(const FObjectInitializer& ObjectInitializer);
+
+public:
 	/** 選択可能設定 */
 	UFUNCTION(BlueprintCallable, Category = "LE Framework|UI")
 	void SetIsSelectable(bool bEnable);

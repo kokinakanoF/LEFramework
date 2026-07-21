@@ -16,6 +16,14 @@
 
 
 
+ULESelectableWidget::ULESelectableWidget(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	SetIsFocusable(true);
+	SetVisibility(ESlateVisibility::Visible);
+}
+
+
 void ULESelectableWidget::SetIsSelectable(bool bEnable)
 {
 	if (bIsSelectable != bEnable)
