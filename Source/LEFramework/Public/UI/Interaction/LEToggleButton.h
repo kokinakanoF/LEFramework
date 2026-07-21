@@ -10,6 +10,7 @@
 #include "LEToggleButton.generated.h"
 
 
+
 //===========================================================================
 //　前方宣言
 //===========================================================================
@@ -84,7 +85,7 @@ public:
 
 	/** 状態変更時イベント */
 	UPROPERTY(BlueprintAssignable, Category = "LEToggleButton|Event")
-	FOnLEToggleButtonStateEvent OnToggleChecked;
+	FOnLEToggleButtonStateEvent OnCheckStateChanged;
 
 
 protected:
@@ -111,8 +112,7 @@ private:
 //===========================================================================
 //　クラス
 //　@brief マネージャによって管理されるチェックボックス
-// 
-//  @note 作成中
+//  @note  管理のためにサブクラスとして作成しています
 //===========================================================================
 UCLASS(ClassGroup = UI, meta = (Category = "LE Framework"))
 class LEFRAMEWORK_API ULECheckBox: public ULEToggleButton
@@ -128,8 +128,6 @@ class LEFRAMEWORK_API ULECheckBox: public ULEToggleButton
 //　クラス
 //　@brief マネージャによって管理されるラジオボタン
 //		   自分でオンからオフになることは出来ません
-// 
-//  @note 作成中
 //===========================================================================
 UCLASS(ClassGroup = UI, meta = (Category = "LE Framework"))
 class LEFRAMEWORK_API ULERadioButton : public ULEToggleButton

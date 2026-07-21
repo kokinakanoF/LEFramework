@@ -41,11 +41,11 @@ class ULECheckBoxManager : public UObject
 public:
 	/** チェックボックスの登録処理 */
 	UFUNCTION(BlueprintCallable)
-	void Register(ULECheckBox* InCheckBox);
+	bool Register(ULECheckBox* InCheckBox);
 
 	/** チェックボックスの登録解除処理 */
 	UFUNCTION(BlueprintCallable)
-	void Unregister(ULECheckBox* InCheckBox);
+	bool Unregister(ULECheckBox* InCheckBox);
 
 
 	/** 

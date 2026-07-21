@@ -43,7 +43,7 @@ void ULEToggleButton::NativeOnChecked()
 	// イベントの実行
 	BP_OnChecked();
 	OnChecked.Broadcast(this);
-	OnToggleChecked.Broadcast(this, true);
+	OnCheckStateChanged.Broadcast(this, true);
 }
 
 void ULEToggleButton::NativeOnUnchecked()
@@ -54,7 +54,7 @@ void ULEToggleButton::NativeOnUnchecked()
 	// イベントの実行
 	BP_OnUnchecked();
 	OnUnchecked.Broadcast(this);
-	OnToggleChecked.Broadcast(this, false);
+	OnCheckStateChanged.Broadcast(this, false);
 }
 
 
